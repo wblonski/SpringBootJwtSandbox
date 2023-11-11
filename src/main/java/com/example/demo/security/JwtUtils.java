@@ -2,7 +2,6 @@ package com.example.demo.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +16,7 @@ import java.util.function.Function;
 public class JwtUtils {
     // ang. claim = żądanie, roszczenie
 
-    private String jwtSigningKey = "secret";
+    private final static String jwtSigningKey = "secret";
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -56,7 +55,8 @@ public class JwtUtils {
                 .claim("authorities", userDetails.getAuthorities())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(24)))
-                .signWith(SignatureAlgorithm.HS256, jwtSigningKey).compact();
+//                .signWith(SignatureAlgorithm.ES256, jwtSigningKey)
+                .compact();
     }
 
     public Boolean isTokenValid(String token, UserDetails userDetails) {
