@@ -12,8 +12,8 @@ import java.util.List;
 
 @Repository
 public class UserDao {
-    private final static List<UserDetails> APPLICATION_USERS = Arrays.asList(
-            new User("bouali.social@gmail.com", "password",
+    private static final List<UserDetails> APPLICATION_USERS = Arrays.asList(
+            new User("jan.kowalski@gmail.com", "password",
                     Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN"))
             ),
             new User("user.mail@gmail.com", "password",
