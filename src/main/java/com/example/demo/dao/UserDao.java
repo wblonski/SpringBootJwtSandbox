@@ -14,10 +14,10 @@ import java.util.List;
 public class UserDao {
     private static final List<UserDetails> APPLICATION_USERS = Arrays.asList(
             new User("jan.kowalski@gmail.com", "password",
-                    Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN"))
-            ),
-            new User("user.mail@gmail.com", "password",
                     Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"))
+            ),
+            new User("admin.mail@gmail.com", "password",
+                    Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN"))
             )
     );
 

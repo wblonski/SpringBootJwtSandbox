@@ -9,14 +9,17 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -38,24 +41,19 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-                .authorizeRequests()
-                .requestMatchers("/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(autenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-        ;
+        http
+                .authorizeHttpRequests(authorize -> authorize
+                        //TODO
+//                        .requestMatchers(RegexRequestMatcher.regexMatcher("/api/v1/auth/authorize/*")).hasRole("ROLE_USER")
+//                        .requestMatchers(RegexRequestMatcher.regexMatcher("/api/v1/auth/authorize/*")).hasRole("ROLE_ADMIN")
+                        .anyRequest().authenticated())
+                .httpBasic(withDefaults());
         return http.build();
     }
 
     @Bean
     public AuthenticationProvider autenticationProvider() {
-        final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userDetailsService());
+        final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userDetailsService());
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }
@@ -69,9 +67,9 @@ public class SecurityConfig {
     protected UserDetailsService userDetailsService() {
 
 //        UserDetails annasmithUser = User.builder()
-//                .username("annasmith")
-//                .password(passwordEncoder.encode("password"))
-//                .roles("STUDENT")
+//                .username("jan.kowalski")
+//                .password("password")
+//                .roles("ROLE_USER")
 //                .build();
 //        return new InMemoryUserDetailsManager(annasmithUser);
 
